@@ -37,6 +37,7 @@ public class MealServlet extends HttpServlet {
             }
             log.debug("redirect to edit");
             request.getRequestDispatcher("editForm.jsp").forward(request, response);
+            return;
         }
 
         final List<MealTo> mealList = controller.getAllMeals(LocalTime.MIN, LocalTime.MAX, 2000);
