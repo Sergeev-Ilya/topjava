@@ -20,19 +20,16 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
+        final String action = request.getParameter("action");
         final String id = request.getParameter("id");
 
-        if (action == null) {
-            action = "";
-        }
-        switch (action) {
+        switch (action == null ? "" : action) {
             case "update":
                 Meal meal = controller.getById(parseInt(id));
                 request.setAttribute("meal", meal);
             case "add":
                 log.debug("redirect to editForm");
-                request.getRequestDispatcher("editForm.jsp").forward(request, response);
+                request.getRequestDispatcher("mealForm.jsp").forward(request, response);
                 break;
             case "delete":
                 log.debug("deleting meal with id: " + id);
@@ -52,10 +49,8 @@ public class MealServlet extends HttpServlet {
         final String datetime = request.getParameter("datetime");
         final String calories = request.getParameter("calories");
 
-        final Meal meal = new Meal(parse(datetime), text, parseInt(calories));
-        if (!isEmpty(id)) {
-            meal.setId(parseInt(id));
-        }
+        final Meal meal = new Meal(isEmpty(id) ? null : parseInt(id), parse(datetime), text, parseInt(calories));
+
         controller.save(meal);
         response.sendRedirect("meals");
     }
