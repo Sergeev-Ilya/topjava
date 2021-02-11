@@ -15,22 +15,11 @@
         </tr>
         <c:forEach var="meal" items="${mealList}" varStatus="counter">
         <tr style="color:${meal.excess ? 'red' : 'green'}">
-            <td>${meal.dateTime}</td>
+            <td>${meal.date} ${meal.time}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            <td>
-                <form method="get" action="meals">
-                    <input type="text" name="update" value="${meal.id}" hidden>
-                    <input type="text" name="action" value="edit" hidden>
-                    <input type="submit" value="Update">
-                </form>
-            </td>
-            <td>
-                <form method="post" action="meals">
-                    <input type="text" name="delete" value="${meal.id}" hidden>
-                    <input type="submit" value="Delete">
-                </form>
-            </td>
+            <td><a href="meals?action=update&id=${meal.id}">Update</a></td>
+            <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
         </c:forEach>
     </table>

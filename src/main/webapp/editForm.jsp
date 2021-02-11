@@ -8,10 +8,9 @@
     <h2>Edit meal</h2>
     <br>
     <form method="post" action="meals">
-        <input type="text" name="update" value="${meal.id}" hidden>
+        <input type="text" name="id" value="${meal.id}" hidden>
         <label>Description<input type="text" name="description" value="${meal.description}"></label><br>
-        <label>Date<input type="date" name="date" value="${date}"></label><br>
-        <label>Time<input type="time" name="time" value="${time}"></label><br>
+        <label>Date<input type="datetime-local" name="datetime" value="${meal.dateTime}"></label><br>
         <label>Calories<input type="number" name="calories" value="${meal.calories}"></label><br>
         <button type="submit">Ok</button><br>
     </form>

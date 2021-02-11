@@ -14,10 +14,10 @@ import static java.util.Comparator.comparing;
 import static ru.javawebinar.topjava.util.TimeUtil.isBetweenHalfOpen;
 
 public class MealsUtil {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final int CALORIES_PER_DAY = 2000;
 
-    public static List<MealTo> getFilteredTo(final List<Meal> meals, final LocalTime startTime,
-                                             final LocalTime endTime, final int caloriesPerDay) {
+    public static List<MealTo> getFilteredTos(final List<Meal> meals, final LocalTime startTime,
+                                              final LocalTime endTime, final int caloriesPerDay) {
         final Map<LocalDate, Integer> caloriesSumByDate = groupByDate(meals);
 
         return meals.stream()
@@ -27,8 +27,12 @@ public class MealsUtil {
                 .collect(Collectors.toList());
     }
 
+    public static List<MealTo> getTos(final List<Meal> meals, final int caloriesPerDay) {
+        return getFilteredTos(meals, LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
+    }
+
     private static MealTo createTo(Meal meal, boolean excess) {
-        return new MealTo(meal.getId(), formatter.format(meal.getDateTime()), meal.getDescription(), meal.getCalories(), excess);
+        return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 
     private static Map<LocalDate, Integer> groupByDate(List<Meal> meals) {

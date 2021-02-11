@@ -1,33 +1,30 @@
 package ru.javawebinar.topjava.controller;
 
-import ru.javawebinar.topjava.dao.MealDao;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.repository.InMemoryMealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.time.LocalTime;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.MealsUtil.CALORIES_PER_DAY;
+
 public class MealController {
-    private final MealDao dao = new MealDao();
+    private final InMemoryMealRepository repository = new InMemoryMealRepository();
 
-    public List<MealTo> getAllMeals(LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        return MealsUtil.getFilteredTo(dao.getAll(), startTime, endTime, caloriesPerDay);
-    }
-
-    public void add(Meal meal) {
-        dao.add(meal);
+    public List<MealTo> getAllMeals() {
+        return MealsUtil.getTos(repository.getAll(), CALORIES_PER_DAY);
     }
 
     public void delete(int id) {
-        dao.delete(id);
-    }
-
-    public void update(Meal newMeal) {
-        dao.update(newMeal);
+        repository.delete(id);
     }
 
     public Meal getById(int id) {
-        return dao.getById(id);
+        return repository.getById(id);
+    }
+
+    public void save(Meal meal) {
+        repository.save(meal);
     }
 }
