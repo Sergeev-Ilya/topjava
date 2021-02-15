@@ -13,16 +13,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
+import static org.springframework.util.StringUtils.isEmpty;
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 public class MealServlet extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-
     private MealRestController controller;
     private ConfigurableApplicationContext ctx;
 
@@ -40,24 +43,15 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String userId = request.getParameter("userId");
-        if (userId != null && !userId.isEmpty()) {
-            SecurityUtil.setAuthUserId(parseInt(userId));
-            response.sendRedirect("meals");
-            return;
-        }
-
-        String id = request.getParameter("id");
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+        Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                parseInt(request.getParameter("calories")));
+                Integer.parseInt(request.getParameter("calories")));
 
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        if (meal.getId() == null) {
+        if (isEmpty(request.getParameter("id"))) {
             controller.create(meal);
         } else {
-            controller.update(meal);
+            controller.update(meal, getId(request));
         }
         response.sendRedirect("meals");
     }
@@ -69,7 +63,6 @@ public class MealServlet extends HttpServlet {
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
-                log.info("Delete {}", id);
                 controller.delete(id);
                 response.sendRedirect("meals");
                 break;
@@ -82,18 +75,16 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filter":
-                Collection<MealTo> filtered = controller.getBetween(
-                        request.getParameter("startTime"),
-                        request.getParameter("endTime"),
-                        request.getParameter("startDate"),
-                        request.getParameter("endDate"));
+                LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
+                LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
+                LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
+                LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
 
-                request.setAttribute("meals", filtered);
+                request.setAttribute("meals", controller.getBetween(startDate, startTime, endDate, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
-                log.info("getAll");
                 request.setAttribute("meals", controller.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
