@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
