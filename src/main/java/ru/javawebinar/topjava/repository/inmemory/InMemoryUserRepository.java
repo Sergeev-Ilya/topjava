@@ -8,9 +8,6 @@ import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.UsersUtil;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
@@ -18,8 +15,7 @@ import static java.util.Comparator.comparing;
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
-    private final Map<Integer, User> repository = new ConcurrentHashMap<>();
-    private final AtomicInteger counter = new AtomicInteger(0);
+    private final InMemoryBaseRepository<User> users = new InMemoryBaseRepository<>();
 
     {
         UsersUtil.users.forEach(this::save);
@@ -28,29 +24,25 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        return repository.remove(id) != null;
+        return users.delete(id);
     }
 
     @Override
     public User save(User user) {
         log.info("save {}", user);
-        if (user.isNew()) {
-            user.setId(counter.incrementAndGet());
-            return repository.put(user.getId(), user);
-        }
-        return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
+        return users.save(user);
     }
 
     @Override
     public User get(int id) {
         log.info("get {}", id);
-        return repository.get(id);
+        return users.get(id);
     }
 
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return repository.values().stream()
+        return users.getCollection().stream()
                 .sorted(comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());
     }
@@ -58,7 +50,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return repository.values().stream()
+        return users.getCollection().stream()
                 .filter(user -> email.equals(user.getEmail()))
                 .findAny()
                 .orElse(null);
