@@ -82,7 +82,7 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filter":
-                Collection<MealTo> filtered = controller.getAllFiltered(
+                Collection<MealTo> filtered = controller.getBetween(
                         request.getParameter("startTime"),
                         request.getParameter("endTime"),
                         request.getParameter("startDate"),
