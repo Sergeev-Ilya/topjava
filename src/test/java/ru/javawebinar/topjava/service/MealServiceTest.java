@@ -1,24 +1,27 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
-import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.MealTestData.MEALS;
+import static ru.javawebinar.topjava.MealTestData.MEAL_1;
+import static ru.javawebinar.topjava.MealTestData.MEAL_1_DATE_TIME;
+import static ru.javawebinar.topjava.MealTestData.MEAL_ID;
+import static ru.javawebinar.topjava.MealTestData.USER_ID;
+import static ru.javawebinar.topjava.MealTestData.assertMatch;
+import static ru.javawebinar.topjava.MealTestData.getNew;
+import static ru.javawebinar.topjava.MealTestData.getUpdated;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -83,11 +86,13 @@ public class MealServiceTest {
     public void updateNotFound() {
         Meal newMeal = getUpdated();
         newMeal.setId(1000);
-        assertThrows(DataAccessException.class, () -> service.update(newMeal, USER_ID));
+        assertThrows(NotFoundException.class, () -> service.update(newMeal, USER_ID));
     }
 
     @Test
     public void updateWithWrongOwner() {
+        Meal newMeal = getUpdated();
+        assertThrows(NotFoundException.class, () -> service.update(newMeal, USER_ID + 10));
     }
 
     @Test
