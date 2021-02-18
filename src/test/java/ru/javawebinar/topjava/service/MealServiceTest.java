@@ -114,7 +114,6 @@ public class MealServiceTest {
         Integer newId = createdMeal.getId();
         Meal newMeal = getNew();
         newMeal.setId(newId);
-        newMeal.setDateTime(createdMeal.getDateTime());
         MEAL_MATCHER.assertMatch(createdMeal, newMeal);
         MEAL_MATCHER.assertMatch(service.get(newId, USER_ID), newMeal);
     }

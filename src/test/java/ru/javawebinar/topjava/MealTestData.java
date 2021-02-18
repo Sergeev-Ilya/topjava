@@ -30,7 +30,7 @@ public class MealTestData {
     public static final int USER_ID = UserTestData.USER_ID;
 
     public static Meal getNew() {
-        return new Meal(LocalDateTime.now(), "test", 100);
+        return new Meal(LocalDateTime.of(2021, 2, 16, 19,30), "test", 100);
     }
 
     public static Meal getUpdated() {
