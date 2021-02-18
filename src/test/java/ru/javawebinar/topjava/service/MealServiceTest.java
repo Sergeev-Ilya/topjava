@@ -33,7 +33,7 @@ import static ru.javawebinar.topjava.MealTestData.getUpdated;
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
+@Sql(scripts = "classpath:db/populateDB.sql")
 public class MealServiceTest {
 
     @Autowired
