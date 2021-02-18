@@ -1,19 +1,17 @@
 package ru.javawebinar.topjava;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
-import static org.assertj.core.api.Assertions.assertThat;
+import static ru.javawebinar.topjava.TestMatcher.usingFieldsComparator;
 
 public class MealTestData {
+    public static TestMatcher<Meal> MEAL_MATCHER = usingFieldsComparator();
+
     public static final int MEAL_ID = 100002;
     public static final LocalDateTime MEAL_1_DATE_TIME = of(2021, 2, 11, 11, 30);
     public static final Meal MEAL_1 = new Meal(MEAL_ID, MEAL_1_DATE_TIME, "Завтрак", 500);
@@ -23,6 +21,8 @@ public class MealTestData {
     public static final Meal MEAL_5 = new Meal(MEAL_ID + 4, of(2021, 2, 12, 11, 30), "Завтрак", 1000);
     public static final Meal MEAL_6 = new Meal(MEAL_ID + 5, of(2021, 2, 12, 15, 0), "Обед", 1000);
     public static final Meal MEAL_7 = new Meal(MEAL_ID + 6, of(2021, 2, 12, 19, 30), "Ужин", 410);
+    public static final Meal ADMIN_MEAL_1 = new Meal(MEAL_ID + 7, of(2021, 2, 13, 14, 30), "Обед Админа", 1500);
+    public static final Meal ADMIN_MEAL_2 = new Meal(MEAL_ID + 8, of(2021, 2, 13, 18, 30), "Ужин Админа", 1510);
 
     public static final List<Meal> MEALS = Arrays.asList(
             MEAL_7, MEAL_6, MEAL_5, MEAL_4, MEAL_3, MEAL_2, MEAL_1);
@@ -38,17 +38,5 @@ public class MealTestData {
         updated.setDescription("TEST");
         updated.setCalories(1);
         return updated;
-    }
-
-    public static void assertMatch(Meal actual, Meal expected) {
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    public static void assertMatch(Iterable<Meal> actual, Meal... expected) {
-        assertMatch(actual, Arrays.asList(expected));
-    }
-
-    public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        assertThat(actual).isEqualTo(expected);
     }
 }
