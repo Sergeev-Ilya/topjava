@@ -11,12 +11,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.MEALS;
 import static ru.javawebinar.topjava.MealTestData.MEAL_1;
 import static ru.javawebinar.topjava.MealTestData.MEAL_1_DATE_TIME;
+import static ru.javawebinar.topjava.MealTestData.MEAL_2;
+import static ru.javawebinar.topjava.MealTestData.MEAL_3;
+import static ru.javawebinar.topjava.MealTestData.MEAL_4;
 import static ru.javawebinar.topjava.MealTestData.MEAL_ID;
 import static ru.javawebinar.topjava.MealTestData.USER_ID;
 import static ru.javawebinar.topjava.MealTestData.assertMatch;
@@ -67,6 +72,18 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenInclusive() {
+        LocalDate start = LocalDate.of(2021, 2, 1);
+        LocalDate end = start.plusDays(10);
+        List<Meal> meals = service.getBetweenInclusive(start, end, USER_ID);
+        assertMatch(meals, MEAL_4, MEAL_3, MEAL_2, MEAL_1);
+    }
+
+    @Test
+    public void getBetweenInclusiveWithWrongOwner() {
+        LocalDate start = LocalDate.of(2021, 2, 1);
+        LocalDate end = start.plusDays(10);
+        List<Meal> meals = service.getBetweenInclusive(start, end, USER_ID + 2);
+        assertMatch(meals, Collections.emptyList());
     }
 
     @Test
